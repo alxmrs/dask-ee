@@ -57,12 +57,13 @@ jobs:
       run: |
         pip install -e .[tests]
     - uses: 'actions/checkout@v4'
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
-        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+# # TODO(alxmrs): Add back gcloud auth, when it's needed.
+#    - id: 'auth'
+#      name: 'Authenticate to Google Cloud'
+#      uses: 'google-github-actions/auth@v1'
+#      with:
+#        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+#        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
     - name: Run unit tests
       run: |
         pytest dee
