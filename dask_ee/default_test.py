@@ -7,7 +7,7 @@ class ImportTest(unittest.TestCase):
     try:
       import dask_ee
     except ModuleNotFoundError:
-      self.fail('Cannot import `dee`.')
+      self.fail('Cannot import `dask_ee`.')
 
 
 if __name__ == '__main__':
