@@ -4,9 +4,10 @@ Before running, please authenticate:
 ```
 earthengine authenticate
 ```
-
 """
 
+import cProfile
+import pstats
 import unittest
 
 import dask.dataframe as dd
@@ -35,6 +36,14 @@ class ReadIntegrationTests(unittest.TestCase):
 
     print(columns)
     print(head)
+
+  def test_prof__read_ee(self):
+    fc = ee.FeatureCollection("WRI/GPPD/power_plants")
+    with cProfile.Profile() as pr:
+      _ = dask_ee.read_ee(fc)
+
+      # Modified version of `pr.print_stats()`.
+      pstats.Stats(pr).sort_stats("cumtime").print_stats()
 
 
 if __name__ == "__main__":
