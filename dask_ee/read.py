@@ -36,7 +36,7 @@ def read_ee(
     raise NotImplementedError('Auto `io_chunks` are not implemented yet!')
 
   # Make all the getInfo() calls at once, up front.
-  fc_size, all_info = ee.List([fc.size(), fc]).getInfo()
+  fc_size, all_info = ee.List([fc.size(), fc.limit(0)]).getInfo()
 
   columns = {'geo': 'Json'}
   columns.update(all_info['columns'])
