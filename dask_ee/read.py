@@ -20,6 +20,7 @@ _BUILTIN_DTYPES = {
     'int32': np.int32,
     'int64': np.int64,
     'int8': np.int8,
+    'json': dict,
     'long': np.int64,
     'short': np.int16,
     'uint16': np.uint16,
@@ -39,7 +40,8 @@ def read_ee(
     raise NotImplementedError('Auto io_chunks are not implemented yet!')
 
   fc_size, all_info = ee.List([fc.size(), fc]).getInfo()
-  columns = all_info['columns']
+  columns = {'geo': 'json'}
+  columns.update(all_info['columns'])
 
   # TODO(#5): Compare `toList()` to other range operations, like getting all index IDs via `getInfo()`.
   pages = [
@@ -55,12 +57,12 @@ def read_ee(
         }
     )
 
-  meta = {k: _BUILTIN_DTYPES[v.lower()] for k, v in columns.items()}
+  # TODO(alxmrs): Support dask dataframe `meta` via columns.
+  # meta = {k: _BUILTIN_DTYPES[v.lower()] for k, v in columns.items()}
   divisions = tuple(range(0, fc_size, io_chunks))
 
   return dd.from_map(
       to_df,
       pages,
-      meta=meta,
       divisions=divisions,
   )
