@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
   "earthengine-api>=0.1.374",
+  "pandas",
   "dask",
 ]
 
