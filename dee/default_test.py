@@ -2,6 +2,7 @@ import unittest
 
 
 class ImportTest(unittest.TestCase):
+
   def test_can_import_dee(self):
     try:
       import dee
