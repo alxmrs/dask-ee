@@ -1,4 +1,4 @@
-# dee
+# dask-ee
 
 Earth Engine FeatureCollections via Dask Dataframes
 

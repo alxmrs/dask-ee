@@ -54,7 +54,7 @@ jobs:
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
         key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-    - name: Install dee
+    - name: Install dask-ee
       run: |
         pip install -e .[tests]
     - name: Lint with pyink

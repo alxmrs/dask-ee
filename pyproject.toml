@@ -1,5 +1,5 @@
 [project]
-name = "dee"
+name = "dask-ee"
 dynamic = ["version"]
 description = "Google Earth Engine FeatureCollections via Dask Dataframes."
 readme = "README.md"
@@ -36,8 +36,8 @@ tests = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/alxmrs/dee"
-Issues = "https://github.com/alxmrs/dee/issues"
+Homepage = "https://github.com/alxmrs/dask-ee"
+Issues = "https://github.com/alxmrs/dask-ee/issues"
 
 [build-system]
 requires = ["setuptools>=64", "setuptools_scm>=8"]
