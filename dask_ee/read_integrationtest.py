@@ -6,6 +6,7 @@ earthengine authenticate
 ```
 
 """
+
 import unittest
 
 import dask.dataframe as dd
@@ -23,17 +24,18 @@ class ReadIntegrationTests(unittest.TestCase):
   def test_reads_dask_dataframe(self):
     fc = ee.FeatureCollection("WRI/GPPD/power_plants")
     ddf = dask_ee.read_ee(fc)
+
     head = ddf.head()
     columns = ddf.columns
-
-    print(columns)
 
     self.assertIsNotNone(ddf)
     self.assertIsNotNone(head)
     self.assertIsInstance(ddf, dd.DataFrame)
+    self.assertEqual(ddf.compute().shape, (28_664, 23))
 
+    print(columns)
     print(head)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
   unittest.main()
