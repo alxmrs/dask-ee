@@ -29,11 +29,24 @@ _BUILTIN_DTYPES = {
 # TODO(#4): Support 'auto' chunks, where we calculate the maximum allowed page size given the number of
 #  bytes in each row.
 def read_ee(
-    fc: ee.FeatureCollection, io_chunks: t.Union[int, t.Literal['auto']] = 5_000
+    fc: t.Union[ee.FeatureCollection, str],
+    chunksize: t.Union[int, t.Literal['auto']] = 5_000,
 ) -> dd.DataFrame:
+  """Read Google Earth Engine FeatureCollections into a Dask Dataframe.
 
-  if io_chunks == 'auto':
-    raise NotImplementedError('Auto `io_chunks` are not implemented yet!')
+  Args:
+    fc: A Google Earth Engine FeatureCollection or valid string path to a FeatureCollection.
+    chunksize: The number of rows per partition to use.
+
+  Returns:
+    A dask DataFrame with paged Google Earth Engine data.
+  """
+
+  if isinstance(fc, str):
+    fc = ee.FeatureCollection(fc)
+
+  if chunksize == 'auto':
+    raise NotImplementedError('Auto chunksize is not implemented yet!')
 
   # Make all the getInfo() calls at once, up front.
   fc_size, all_info = ee.List([fc.size(), fc.limit(0)]).getInfo()
@@ -42,12 +55,12 @@ def read_ee(
   columns.update(all_info['columns'])
   del columns['system:index']
 
-  divisions = tuple(range(0, fc_size, io_chunks))
+  divisions = tuple(range(0, fc_size, chunksize))
 
   # TODO(#5): Compare `toList()` to other range operations, like getting all index IDs via `getInfo()`.
-  pages = [ee.FeatureCollection(fc.toList(io_chunks, i)) for i in divisions]
+  pages = [ee.FeatureCollection(fc.toList(chunksize, i)) for i in divisions]
   # Get the remainder, if it exists. `io_chunks` are not likely to evenly partition the data.
-  d, r = divmod(fc_size, io_chunks)
+  d, r = divmod(fc_size, chunksize)
   if r != 0:
     pages.append(ee.FeatureCollection(fc.toList(r, d)))
     divisions += (fc_size,)
