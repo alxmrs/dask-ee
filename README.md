@@ -81,6 +81,11 @@ df.head()
 Contributions are welcome. A good way to start is to check out open [issues](https://github.com/alxmrs/dask-ee/issues)
 or file a new one. We're happy to review pull requests, too.
 
+Before writing code, please install the development dependencies (after cloning the repo): 
+```shell
+pip install -e ".[dev]"
+```
+
 ## License
 ```
 Copyright 2024 Alexander S Merose
