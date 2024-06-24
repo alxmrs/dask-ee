@@ -23,7 +23,7 @@ class ReadIntegrationTests(unittest.TestCase):
     ee.Initialize()
 
   def test_reads_dask_dataframe(self):
-    fc = ee.FeatureCollection("WRI/GPPD/power_plants")
+    fc = ee.FeatureCollection('WRI/GPPD/power_plants')
     df = dask_ee.read_ee(fc)
 
     head = df.head()
@@ -40,11 +40,12 @@ class ReadIntegrationTests(unittest.TestCase):
   def test_works_with_defined_features(self):
     # Make a list of Features.
     features = [
-      ee.Feature(
-        ee.Geometry.Rectangle(30.01, 59.80, 30.59, 60.15), {'name': 'Voronoi'}
-      ),
-      ee.Feature(ee.Geometry.Point(-73.96, 40.781), {'name': 'Thiessen'}),
-      ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {'name': 'Dirichlet'}),
+        ee.Feature(
+            ee.Geometry.Rectangle(30.01, 59.80, 30.59, 60.15),
+            {'name': 'Voronoi'},
+        ),
+        ee.Feature(ee.Geometry.Point(-73.96, 40.781), {'name': 'Thiessen'}),
+        ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {'name': 'Dirichlet'}),
     ]
 
     fc = ee.FeatureCollection(features)
@@ -74,15 +75,14 @@ class ReadIntegrationTests(unittest.TestCase):
     self.assertEqual(list(df.columns), ['geo'])
     self.assertEqual(df.compute().shape, (1000, 1))
 
-
   def test_prof__read_ee(self):
-    fc = ee.FeatureCollection("WRI/GPPD/power_plants")
+    fc = ee.FeatureCollection('WRI/GPPD/power_plants')
     with cProfile.Profile() as pr:
       _ = dask_ee.read_ee(fc)
 
       # Modified version of `pr.print_stats()`.
-      pstats.Stats(pr).sort_stats("cumtime").print_stats()
+      pstats.Stats(pr).sort_stats('cumtime').print_stats()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   unittest.main()
