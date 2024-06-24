@@ -11,7 +11,9 @@ import pstats
 import unittest
 
 import dask.dataframe as dd
+import dask_geopandas as dgp
 import ee
+import shapely
 
 import dask_ee
 
@@ -37,6 +39,21 @@ class ReadIntegrationTests(unittest.TestCase):
     print(columns)
     print(head)
 
+  def test_read_different_dataframe(self):
+    fc = ee.FeatureCollection('TIGER/2016/Roads').limit(10_001)
+    df = dask_ee.read_ee(fc)
+
+    head = df.head()
+    columns = df.columns
+
+    self.assertIsNotNone(df)
+    self.assertIsNotNone(head)
+    self.assertIsInstance(df, dd.DataFrame)
+    self.assertEqual(df.compute().shape, (10_001, 5))
+
+    print(columns)
+    print(head)
+
   def test_works_with_defined_features(self):
     # Make a list of Features.
     features = [
@@ -52,14 +69,14 @@ class ReadIntegrationTests(unittest.TestCase):
 
     df = dask_ee.read_ee(fc)
 
-    self.assertEqual(list(df.columns), ['geo', 'name'])
+    self.assertEqual(list(df.columns), ['geometry', 'name'])
 
   def test_works_with_a_single_feature_in_fc(self):
     from_geom = ee.FeatureCollection(ee.Geometry.Point(16.37, 48.225))
 
     df = dask_ee.read_ee(from_geom)
 
-    self.assertEqual(list(df.columns), ['geo'])
+    self.assertEqual(list(df.columns), ['geometry'])
     self.assertEqual(df.compute().shape, (1, 1))
 
   def test_can_create_random_points(self):
@@ -72,7 +89,7 @@ class ReadIntegrationTests(unittest.TestCase):
     # Note: these random points have no system:index!
     df = dask_ee.read_ee(random_points)
 
-    self.assertEqual(list(df.columns), ['geo'])
+    self.assertEqual(list(df.columns), ['geometry'])
     self.assertEqual(df.compute().shape, (1000, 1))
 
   def test_prof__read_ee(self):
@@ -82,6 +99,16 @@ class ReadIntegrationTests(unittest.TestCase):
 
       # Modified version of `pr.print_stats()`.
       pstats.Stats(pr).sort_stats('cumtime').print_stats()
+
+  def test_integrates_with_geopandas_dask(self):
+    fc = ee.FeatureCollection('WRI/GPPD/power_plants')
+    df = dask_ee.read_ee(fc)
+    gdf = dgp.from_dask_dataframe(df)
+
+    self.assertIsNotNone(df.compute().geometry)
+    self.assertIsInstance(df.geometry.dtype, shapely.GeometryType)
+
+    print(df.head())
 
 
 if __name__ == '__main__':

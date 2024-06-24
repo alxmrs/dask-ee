@@ -75,9 +75,10 @@ def read_ee(
 
   meta = {k: _BUILTIN_DTYPES[v] for k, v in columns.items()}
 
+  # We rename to geometry because that is the default column that geopandas looks for.
   return dd.from_map(
       to_df,
       pages,
       meta=meta,
       divisions=divisions,
-  )
+  ).rename(columns={'geo': 'geometry'})

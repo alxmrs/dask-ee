@@ -9,11 +9,13 @@ _Google Earth Engine Feature Collections via Dask DataFrames._
 ## How to use
 
 Install with pip:
+
 ```shell
 pip install dask-ee
 ```
 
 Then, authenticate Earth Engine:
+
 ```shell
 earthengine authenticate
 ```
@@ -26,36 +28,41 @@ import dask_ee
 ```
 
 You'll need to initialize Earth Engine before working with data:
+
 ```python
 ee.Initialize()
 ```
 
 From here, you can read Earth Engine FeatureCollections like they are DataFrames:
+
 ```python
 df = dask_ee.read_ee("WRI/GPPD/power_plants")
 df.head()
 ```
+
 These work like Pandas DataFrames, but they are lazily evaluated via [Dask](https://dask.org/).
 
 Feel free to do any analysis you wish. For example:
+
 ```python
 # Thanks @aazuspan, https://www.aazuspan.dev/blog/dask_featurecollection
 (
-    df[df.comm_year.gt(1940) & df.country.eq("USA") & df.fuel1.isin(["Coal", "Wind"])]
-    .astype({"comm_year": int})
-    .drop(columns=["geo"])
-    .groupby(["comm_year", "fuel1"])
-    .agg({"capacitymw": "sum"})
-    .reset_index()
-    .sort_values(by=["comm_year"])
-    .compute(scheduler="threads")
-    .pivot_table(index="comm_year", columns="fuel1", values="capacitymw", fill_value=0)
-    .plot()
+  df[df.comm_year.gt(1940) & df.country.eq("USA") & df.fuel1.isin(["Coal", "Wind"])]
+  .astype({"comm_year": int})
+  .drop(columns=["geometry"])
+  .groupby(["comm_year", "fuel1"])
+  .agg({"capacitymw": "sum"})
+  .reset_index()
+  .sort_values(by=["comm_year"])
+  .compute(scheduler="threads")
+  .pivot_table(index="comm_year", columns="fuel1", values="capacitymw", fill_value=0)
+  .plot()
 )
 ```
+
 ![Coal vs Wind in the US since 1940](https://raw.githubusercontent.com/alxmrs/dask-ee/main/demo.png)
 
-There are a few other useful things you can do. 
+There are a few other useful things you can do.
 
 For one, you may pass in a pre-processed `ee.FeatureCollection`. This allows full utilization
 of the Earth Engine API.
@@ -71,6 +78,7 @@ df = dask_ee.read_ee(fc)
 
 In addition, you may change the `chunksize`, which controls how many rows are included in each
 Dask partition.
+
 ```python
 df = dask_ee.read_ee("WRI/GPPD/power_plants", chunksize=7_000)
 df.head()
@@ -81,12 +89,33 @@ df.head()
 Contributions are welcome. A good way to start is to check out open [issues](https://github.com/alxmrs/dask-ee/issues)
 or file a new one. We're happy to review pull requests, too.
 
-Before writing code, please install the development dependencies (after cloning the repo): 
+Before writing code, please install the development dependencies (after cloning the repo):
+
 ```shell
 pip install -e ".[dev]"
 ```
 
+<details>
+<summary>Help! On install, I hit the error: <code>NotADirectoryError: [Errno 20] Not a directory: 'gdal-config'</code>.</summary>
+
+You may need to install `gdal` on your system to properly test `dask-geopandas`. On a Mac
+with [Homebrew](https://brew.sh), you can run:
+
+```shell
+brew install gdal
+```
+
+Or, if you're using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html), you can just
+directly install `dask-geopandas`:
+
+```shell
+conda install dask-geopandas -c conda-forge
+```
+
+</details>
+
 ## License
+
 ```
 Copyright 2024 Alexander S Merose
 
