@@ -53,7 +53,7 @@ Feel free to do any analysis you wish. For example:
     .plot()
 )
 ```
-![Coal vs Wind in the US since 1940](demo.png)
+![Coal vs Wind in the US since 1940](https://raw.githubusercontent.com/alxmrs/dask-ee/main/demo.png)
 
 There are a few other useful things you can do. 
 
