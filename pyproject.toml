@@ -36,11 +36,11 @@ dependencies = [
 tests = [
   "absl-py",
   "pytest",
+  "pyink",
 ]
 dev = [
   "dask-ee[tests]",
   "build",
-  "pyink",
 ]
 
 [project.urls]
