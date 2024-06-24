@@ -26,8 +26,6 @@ _BUILTIN_DTYPES = {
 }
 
 
-# TODO(#4): Support 'auto' chunks, where we calculate the maximum allowed page size given the number of
-#  bytes in each row.
 def read_ee(
     fc: t.Union[ee.FeatureCollection, str],
     chunksize: t.Union[int, t.Literal['auto']] = 5_000,
@@ -41,25 +39,27 @@ def read_ee(
   Returns:
     A dask DataFrame with paged Google Earth Engine data.
   """
+  # TODO(#4): Support 'auto' chunks, where we calculate the maximum allowed page size given the number of
+  #  bytes in each row.
+  if chunksize == 'auto':
+    raise NotImplementedError('Auto chunksize is not implemented yet!')
 
   if isinstance(fc, str):
     fc = ee.FeatureCollection(fc)
-
-  if chunksize == 'auto':
-    raise NotImplementedError('Auto chunksize is not implemented yet!')
 
   # Make all the getInfo() calls at once, up front.
   fc_size, all_info = ee.List([fc.size(), fc.limit(0)]).getInfo()
 
   columns = {'geo': 'Json'}
   columns.update(all_info['columns'])
-  del columns['system:index']
+  if 'system:index' in columns:
+    del columns['system:index']
 
   divisions = tuple(range(0, fc_size, chunksize))
 
   # TODO(#5): Compare `toList()` to other range operations, like getting all index IDs via `getInfo()`.
   pages = [ee.FeatureCollection(fc.toList(chunksize, i)) for i in divisions]
-  # Get the remainder, if it exists. `io_chunks` are not likely to evenly partition the data.
+  # Get the remainder, if it exists. `chunksize` is not likely to evenly partition the data.
   d, r = divmod(fc_size, chunksize)
   if r != 0:
     pages.append(ee.FeatureCollection(fc.toList(r, d)))

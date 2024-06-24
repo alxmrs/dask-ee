@@ -53,7 +53,7 @@ Feel free to do any analysis you wish. For example:
     .plot()
 )
 ```
-![Coal vs Wind in the US since 1940](demo.png)
+![Coal vs Wind in the US since 1940](https://raw.githubusercontent.com/alxmrs/dask-ee/main/demo.png)
 
 There are a few other useful things you can do. 
 
@@ -80,6 +80,11 @@ df.head()
 
 Contributions are welcome. A good way to start is to check out open [issues](https://github.com/alxmrs/dask-ee/issues)
 or file a new one. We're happy to review pull requests, too.
+
+Before writing code, please install the development dependencies (after cloning the repo): 
+```shell
+pip install -e ".[dev]"
+```
 
 ## License
 ```

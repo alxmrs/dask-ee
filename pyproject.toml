@@ -38,6 +38,10 @@ tests = [
   "pytest",
   "pyink",
 ]
+dev = [
+  "dask-ee[tests]",
+  "build",
+]
 
 [project.urls]
 Homepage = "https://github.com/alxmrs/dask-ee"
