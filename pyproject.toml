@@ -30,6 +30,7 @@ classifiers = [
 dependencies = [
   "earthengine-api>=0.1.374",
   "dask[dataframe]",
+  "pandas",
 ]
 
 [project.optional-dependencies]
