@@ -12,6 +12,7 @@ _BUILTIN_DTYPES = {
     'Double': np.float64,
     'Float': np.float32,
     'Int': np.int32,
+    'Integer': np.int32,
     'Int16': np.int16,
     'Int32': np.int32,
     'Int64': np.int64,
