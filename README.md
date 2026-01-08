@@ -56,16 +56,16 @@ Feel free to do any analysis you wish. For example:
 ```python
 # Thanks @aazuspan, https://www.aazuspan.dev/blog/dask_featurecollection
 (
-    df[df.comm_year.gt(1940) & df.country.eq("USA") & df.fuel1.isin(["Coal", "Wind"])]
-    .astype({"comm_year": int})
-    .drop(columns=["geo"])
-    .groupby(["comm_year", "fuel1"])
-    .agg({"capacitymw": "sum"})
-    .reset_index()
-    .sort_values(by=["comm_year"])
-    .compute(scheduler="threads")
-    .pivot_table(index="comm_year", columns="fuel1", values="capacitymw", fill_value=0)
-    .plot()
+  df[df.comm_year.gt(1940) & df.country.eq("USA") & df.fuel1.isin(["Coal", "Wind"])]
+  .astype({"comm_year": int})
+  .drop(columns=["geometry"])
+  .groupby(["comm_year", "fuel1"])
+  .agg({"capacitymw": "sum"})
+  .reset_index()
+  .sort_values(by=["comm_year"])
+  .compute(scheduler="threads")
+  .pivot_table(index="comm_year", columns="fuel1", values="capacitymw", fill_value=0)
+  .plot()
 )
 ```
 
@@ -103,6 +103,25 @@ Before writing code, please install the development dependencies (after cloning 
 ```shell
 pip install -e ".[dev]"
 ```
+
+<details>
+<summary>Help! On install, I hit the error: <code>NotADirectoryError: [Errno 20] Not a directory: 'gdal-config'</code>.</summary>
+
+You may need to install `gdal` on your system to properly test `dask-geopandas`. On a Mac
+with [Homebrew](https://brew.sh), you can run:
+
+```shell
+brew install gdal
+```
+
+Or, if you're using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html), you can just
+directly install `dask-geopandas`:
+
+```shell
+conda install dask-geopandas -c conda-forge
+```
+
+</details>
 
 ## License
 

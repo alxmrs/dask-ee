@@ -38,6 +38,7 @@ tests = [
   "absl-py",
   "pytest",
   "pyink",
+  "dask-geopandas",
 ]
 dev = [
   "dask-ee[tests]",
